@@ -3,7 +3,7 @@ FROM composer:2.7 as vendor
 
 WORKDIR /app
 
-COPY composer.json composer.lock ./
+COPY composer.json ./
 RUN composer install \
     --ignore-platform-reqs \
     --no-interaction \
@@ -16,7 +16,7 @@ FROM node:20-alpine as frontend
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN npm install
 
 COPY vite.config.js ./
@@ -34,6 +34,7 @@ RUN apk add --no-cache \
     libzip-dev \
     zip \
     unzip \
+    nginx \
     && docker-php-ext-install \
     pdo_mysql \
     zip
@@ -55,6 +56,9 @@ RUN chown -R www-data:www-data /var/www/html \
 ENV APP_ENV=production
 ENV APP_DEBUG=false
 
+# 複製環境設定檔
+COPY .env.example .env
+
 # 生成應用程式金鑰
 RUN php artisan key:generate
 
@@ -63,5 +67,8 @@ RUN php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache
 
-# 設定容器啟動命令
-CMD ["php-fpm"] 
+# 設定 Nginx
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+
+# 啟動 Nginx 和 PHP-FPM
+CMD sh -c "nginx && php-fpm" 
