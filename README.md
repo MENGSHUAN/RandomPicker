@@ -1,6 +1,6 @@
 # Laravel 樂透抽籤系統
 
-這是一個基於 Laravel 框架開發的樂透抽籤系統，提供兩種不同的抽籤方式：轉盤抽籤和拉霸機抽籤。
+這是一個基於 Laravel 框架開發的樂透抽籤程式。
 
 ## 功能特點
 
@@ -10,21 +10,20 @@
 - 流暢的轉動動畫
 - 即時顯示抽籤結果
 
-### 拉霸機抽籤
-- 支援多台拉霸機同時運作（最多4台）
-- 可自定義抽籤選項
-- 選項管理功能（新增、編輯、刪除）
-- 防止重複抽中同一選項
-- 可重置所有選項狀態
-
 ## 系統需求
 
+### 基本需求
 - PHP >= 8.1
 - Composer
-- MySQL 或 MariaDB
 - Node.js 和 NPM（用於前端資源）
 
+### Docker 需求（選用）
+- Docker
+- Docker Compose
+
 ## 安裝步驟
+
+### 傳統安裝方式
 
 1. 複製專案
 ```bash
@@ -52,21 +51,48 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-6. 設定資料庫
-- 在 `.env` 檔案中設定資料庫連線資訊
-- 執行資料庫遷移和種子資料
-```bash
-php artisan migrate --seed
-```
-
-7. 編譯前端資源
+6. 編譯前端資源
 ```bash
 npm run build
 ```
 
-8. 啟動開發伺服器
+7. 啟動開發伺服器
 ```bash
 php artisan serve
+```
+
+### Docker 安裝方式
+
+1. 複製專案
+```bash
+git clone [專案網址]
+cd laravel-lottery
+```
+
+2. 複製環境設定檔
+```bash
+cp .env.example .env
+```
+
+3. 啟動 Docker 容器
+```bash
+docker-compose up -d
+```
+
+4. 安裝依賴套件
+```bash
+docker-compose exec app composer install
+docker-compose exec app npm install
+```
+
+5. 生成應用程式金鑰
+```bash
+docker-compose exec app php artisan key:generate
+```
+
+6. 編譯前端資源
+```bash
+docker-compose exec app npm run build
 ```
 
 ## 使用說明
@@ -75,24 +101,34 @@ php artisan serve
    - 訪問 `/wheel` 路徑
    - 點擊「開始抽籤」按鈕進行抽籤
 
-2. 拉霸機抽籤
-   - 訪問 `/slot` 路徑
-   - 使用控制面板調整拉霸機數量（1-4台）
-   - 點擊「開始抽籤」按鈕進行抽籤
-   - 點擊「管理選項」可進入選項管理頁面
+## 專案結構
 
-3. 選項管理
-   - 在拉霸機頁面點擊「管理選項」或直接訪問 `/options` 路徑
-   - 可新增、編輯、刪除抽籤選項
-   - 可查看選項是否已被抽中
-   - 可重置所有選項的抽中狀態
+```
+laravel-lottery/
+├── app/                # 應用程式核心程式碼
+├── bootstrap/          # 框架啟動檔案
+├── config/            # 設定檔案
+├── docker/            # Docker 相關設定
+├── public/            # 公開目錄
+├── resources/         # 前端資源
+├── routes/            # 路由定義
+├── storage/           # 儲存檔案
+├── tests/             # 測試檔案
+├── vendor/            # Composer 依賴
+├── .env.example       # 環境設定範例
+├── .gitignore         # Git 忽略檔案
+├── composer.json      # Composer 設定
+├── docker-compose.yml # Docker Compose 設定
+├── Dockerfile         # Docker 映像檔設定
+└── package.json       # NPM 套件設定
+```
 
 ## 技術架構
 
 - 後端框架：Laravel
 - 前端技術：HTML, CSS, JavaScript, Tailwind CSS
-- 資料庫：MySQL/MariaDB
 - 動畫效果：CSS3, JavaScript
+- 容器化：Docker, Docker Compose
 
 ## 授權
 
