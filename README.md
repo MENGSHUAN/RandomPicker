@@ -61,7 +61,7 @@ npm run build
 php artisan serve
 ```
 
-### Docker 安裝方式
+### 使用 Laravel Sail 安裝
 
 1. 複製專案
 ```bash
@@ -74,25 +74,25 @@ cd laravel-lottery
 cp .env.example .env
 ```
 
-3. 啟動 Docker 容器
+3. 啟動 Sail 容器
 ```bash
-docker-compose up -d
+./vendor/bin/sail up -d
 ```
 
 4. 安裝依賴套件
 ```bash
-docker-compose exec app composer install
-docker-compose exec app npm install
+./vendor/bin/sail composer install
+./vendor/bin/sail npm install
 ```
 
 5. 生成應用程式金鑰
 ```bash
-docker-compose exec app php artisan key:generate
+./vendor/bin/sail artisan key:generate
 ```
 
 6. 編譯前端資源
 ```bash
-docker-compose exec app npm run build
+./vendor/bin/sail npm run build
 ```
 
 ## 使用說明
@@ -128,7 +128,7 @@ laravel-lottery/
 - 後端框架：Laravel
 - 前端技術：HTML, CSS, JavaScript, Tailwind CSS
 - 動畫效果：CSS3, JavaScript
-- 容器化：Docker, Docker Compose
+- 容器化：Laravel Sail
 
 ## 授權
 
