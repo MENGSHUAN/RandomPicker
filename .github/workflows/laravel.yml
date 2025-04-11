@@ -58,3 +58,32 @@ jobs:
           build-args: |
             WWWGROUP=1000
             WWWUSER=1000
+
+  deploy-to-heroku:
+    needs: [laravel-tests, docker-build-push]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+      
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.14.15
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          buildpack: heroku/php
+          env_file: ".env"
+        env:
+          APP_KEY: ${{secrets.APP_KEY}}
+          APP_ENV: production
+          APP_DEBUG: false
+          DB_CONNECTION: ${{secrets.DB_CONNECTION}}
+          DB_HOST: ${{secrets.DB_HOST}}
+          DB_PORT: ${{secrets.DB_PORT}}
+          DB_DATABASE: ${{secrets.DB_DATABASE}}
+          DB_USERNAME: ${{secrets.DB_USERNAME}}
+          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
