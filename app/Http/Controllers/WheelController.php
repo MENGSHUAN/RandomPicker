@@ -6,11 +6,6 @@ use Illuminate\Http\Request;
 
 class WheelController extends Controller
 {
-    private $prizes = ['Mark', 'John', 'Mary', 'Tom', 'Jerry', 'Lisa', 'Andy', 'Lily', 'Wendy', 'Peter',
-    'Mark', 'John', 'Mary', 'Tom', 'Jerry', 'Lisa', 'Andy', 'Lily', 'Wendy', 'Peter',
-    'Mark', 'John', 'Mary', 'Tom', 'Jerry', 'Lisa', 'Andy', 'Lily', 'Wendy', 'Peter',
-    'Mark', 'John', 'Mary', 'Tom', 'Jerry', 'Lisa', 'Andy', 'Lily', 'Wendy', 'Peter'];
-
     public function wheel()
     {
         return view('wheel');
@@ -18,9 +13,22 @@ class WheelController extends Controller
 
     public function draw(Request $request)
     {
-        $index = random_int(0, count($this->prizes) - 1);
+        $count = $request->input('count', 40);
+        $prizes = range(1, $count);
+        $index = random_int(0, count($prizes) - 1);
         return response()->json([
-            'result' => $this->prizes[$index],
+            'result' => $prizes[$index],
+            'index' => $index
+        ]);
+    }
+
+    public function setOptions(Request $request)
+    {
+        $count = $request->input('count', 40);
+        $prizes = range(1, $count);
+        $index = random_int(0, count($prizes) - 1);
+        return response()->json([
+            'result' => $prizes[$index],
             'index' => $index
         ]);
     }

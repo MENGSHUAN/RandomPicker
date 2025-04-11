@@ -97,15 +97,17 @@
         }
 
         #spin-btn {
-            margin-top: 40px;
-            padding: 15px 30px;
+            padding: 0 30px;
             font-size: 18px;
             background-color: #4CAF50;
             color: white;
-            border: none;
+            border: 2px solid #4CAF50;
             border-radius: 5px;
             cursor: pointer;
+            text-align: center;
             transition: background-color 0.3s;
+            height: 52px;
+            line-height: 52px;
         }
 
         #spin-btn:hover {
@@ -125,6 +127,27 @@
             text-align: center;
             min-height: 36px;
         }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        #prize-count {
+            font-size: 18px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            width: 100px;
+            text-align: center;
+            height: 52px; /* 確保與按鈕等高 */
+        }
+
+        #prize-count:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
     </style>
 </head>
 <body>
@@ -139,7 +162,10 @@
         </div>
         <div class="right-section">
             <p id="result"></p>
-            <button id="spin-btn">開始抽籤</button>
+            <div class="input-group">
+                <input type="number" id="prize-count" min="1" max="100" value="12" placeholder="選項數量">
+                <button id="spin-btn">開始抽籤</button>
+            </div>
         </div>
     </div>
 
@@ -147,30 +173,46 @@
         const wheel = document.getElementById('wheel');
         const spinBtn = document.getElementById('spin-btn');
         const resultText = document.getElementById('result');
-        const prizes = ['Mark', 'John', 'Mary', 'Tom', 'Jerry', 'Lisa', 'Andy', 'Lily', 'Wendy', 'Peter',
-                        'Mark', 'John', 'Mary', 'Tom', 'Jerry', 'Lisa', 'Andy', 'Lily', 'Wendy', 'Peter',
-                        'Mark', 'John', 'Mary', 'Tom', 'Jerry', 'Lisa', 'Andy', 'Lily', 'Wendy', 'Peter',
-                        'Mark', 'John', 'Mary', 'Tom', 'Jerry', 'Lisa', 'Andy', 'Lily', 'Wendy', 'Peter'];
+        const prizeCountInput = document.getElementById('prize-count');
+        let prizes = [];
         const baseColors = [
-            //'#4169E1', // 皇家藍
             '#FF6B6B', // 珊瑚紅
             '#FFD93D', // 明亮黃
             '#6BCB77', // 薄荷綠
             '#B4B4B8', // 淺灰色
-            //'#9B59B6', // 紫羅蘭
             '#3498DB'  // 天藍色
-        ]; // 基本顏色
-        const anglePerSlice = 360 / prizes.length;
+        ];
+        let anglePerSlice = 360 / prizes.length;
         let currentRotation = 0;
+
+        // 更新獎品列表
+        function updatePrizes() {
+            const count = parseInt(prizeCountInput.value) || 12;
+            prizes = Array.from({length: count}, (_, i) => i + 1);
+            anglePerSlice = 360 / prizes.length;
+            initWheel();
+
+            // 發送選項數量到後端
+            fetch('/set-options', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ count })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Options set:', data);
+            })
+            .catch(error => {
+                console.error('Error setting options:', error);
+            });
+        }
 
         // 獲取顏色的函數，確保循環使用顏色時不會相鄰
         function getColor(index) {
             const totalColors = baseColors.length;
-            // 使用交錯的方式選擇顏色
-            // 第一輪：0,1,2,3,4,5,6
-            // 第二輪：1,2,3,4,5,6,0
-            // 第三輪：2,3,4,5,6,0,1
-            // 這樣確保了每個顏色都不會與前後相鄰
             const offset = Math.floor(index / totalColors); // 每輪的偏移量
             const adjustedIndex = (index + offset) % totalColors;
             return baseColors[adjustedIndex];
@@ -178,6 +220,10 @@
 
         // 初始化轉盤樣式
         function initWheel() {
+            // 清除所有現有的文字元素
+            const existingTexts = wheel.querySelectorAll('.prize-text');
+            existingTexts.forEach(text => text.remove());
+
             // 設置扇形背景
             let gradient = '';
             prizes.forEach((prize, index) => {
@@ -190,8 +236,7 @@
                 text.className = 'prize-text';
                 text.textContent = prize;
 
-                // 計算文字位置和旋轉角度
-                // 將文字放在扇形的角平分線上
+                // 計算文字位置和旋轉角度，將文字放在扇形的角平分線上
                 const rotationAngle = startAngle + (anglePerSlice / 2);
                 const radius = 220; // 調整文字到圓心的距離
                 
@@ -233,7 +278,10 @@
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                }
+                },
+                body: JSON.stringify({
+                    count: parseInt(prizeCountInput.value) || 12
+                })
             })
             .then(response => response.json())
             .then(data => {
@@ -259,8 +307,14 @@
             });
         });
 
+        // 監聽輸入框變化
+        prizeCountInput.addEventListener('change', updatePrizes);
+
         // 頁面載入時初始化轉盤
-        window.onload = initWheel;
+        window.onload = () => {
+            prizeCountInput.value = 12; // 設定初始值為 12
+            updatePrizes();
+        };
     </script>
 </body>
 </html> 

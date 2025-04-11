@@ -7,4 +7,5 @@ use App\Http\Controllers\OptionController;
 
 Route::get('/wheel', [WheelController::class, 'wheel']);
 Route::post('/draw', [WheelController::class, 'draw']);
+Route::post('/set-options', [WheelController::class, 'setOptions']);
 
