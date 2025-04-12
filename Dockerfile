@@ -70,5 +70,8 @@ RUN php artisan config:cache \
 # 設定 Nginx
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 
+# 設定環境變數
+ENV PORT=8080
+
 # 啟動 Nginx 和 PHP-FPM
-CMD sh -c "nginx && php-fpm" 
+CMD sh -c "nginx -g 'daemon off;' & php-fpm" 
