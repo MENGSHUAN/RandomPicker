@@ -2,9 +2,9 @@ name: Laravel
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "develop" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "develop" ]
 
 jobs:
   laravel-tests:
@@ -59,31 +59,31 @@ jobs:
             WWWGROUP=1000
             WWWUSER=1000
 
-  deploy-to-heroku:
-    needs: [laravel-tests, docker-build-push]
+  heroku-dockerhub-deploy:
+    needs: docker-build-push
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      
       - name: Install Heroku CLI
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh
-      
-      - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.14.15
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
-          buildpack: heroku/php
-          env_file: ".env"
+
+      - name: Login to Heroku Container Registry
+        run: echo "${{ secrets.HEROKU_API_KEY }}" | docker login --username=_ --password-stdin registry.heroku.com
+
+      - name: Pull image from Docker Hub
+        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/laravel-lottery:latest
+
+      - name: Tag image for Heroku
+        run: docker tag ${{ secrets.DOCKERHUB_USERNAME }}/laravel-lottery:latest registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+
+      - name: Push image to Heroku
+        run: docker push registry.heroku.com/${{ secrets.HEROKU_APP_NAME }}/web
+
+      - name: Release image on Heroku
+        run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
         env:
-          APP_KEY: ${{secrets.APP_KEY}}
-          APP_ENV: production
-          APP_DEBUG: false
-          DB_CONNECTION: ${{secrets.DB_CONNECTION}}
-          DB_HOST: ${{secrets.DB_HOST}}
-          DB_PORT: ${{secrets.DB_PORT}}
-          DB_DATABASE: ${{secrets.DB_DATABASE}}
-          DB_USERNAME: ${{secrets.DB_USERNAME}}
-          DB_PASSWORD: ${{secrets.DB_PASSWORD}}
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+
+
