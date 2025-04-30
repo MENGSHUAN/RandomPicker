@@ -1,7 +1,9 @@
 #!/bin/sh
 
-# 設定環境變數
-export PORT=${PORT:-8080}
+# 確保 PORT 環境變數存在
+if [ -z "$PORT" ]; then
+    export PORT=8080
+fi
 
 # 啟動 PHP-FPM
 php-fpm &
