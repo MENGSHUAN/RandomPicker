@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# 設定環境變數
+export PORT=${PORT:-8080}
+
 # 啟動 PHP-FPM
 php-fpm &
 

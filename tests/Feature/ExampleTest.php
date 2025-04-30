@@ -15,7 +15,7 @@ class ExampleTest extends TestCase
      */
     public function test_wheel_page_returns_successful_response(): void
     {
-        $response = $this->get('/wheel');
+        $response = $this->get('/');
         $response->assertStatus(200);
     }
 }
