@@ -75,8 +75,5 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/start.sh /start.sh
 RUN chmod +x /start.sh
 
-# 設定環境變數
-ENV PORT=8080
-
 # 啟動應用程式
 CMD ["/start.sh"] 
