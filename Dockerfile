@@ -59,16 +59,13 @@ ENV APP_DEBUG=false
 # 複製環境設定檔
 COPY .env.example .env
 
-# 生成應用程式金鑰
-# RUN php artisan key:generate
-
-# 清理快取
-# RUN php artisan config:cache \
-#     && php artisan route:cache \
-#     && php artisan view:cache
-
+# 複製 Nginx 設定檔
 COPY docker/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY docker/start.sh /start.sh
 RUN chmod +x /start.sh
 
-ENTRYPOINT ["/start.sh"]
+# 設定工作目錄
+WORKDIR /var/www/html
+
+# 設定啟動命令
+CMD ["/start.sh"]

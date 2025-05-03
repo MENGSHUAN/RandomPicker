@@ -1,4 +1,3 @@
-user nobody;
 worker_processes auto;
 error_log /dev/stderr;
 pid /tmp/nginx.pid;
@@ -20,7 +19,7 @@ http {
     keepalive_timeout 65;
     
     server {
-        listen __PORT__;
+        listen ${PORT};
         server_name _;
         root /var/www/html/public;
         index index.php;
