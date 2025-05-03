@@ -24,12 +24,12 @@ COPY resources/ ./resources/
 RUN npm run build
 
 # 應用程式階段
-FROM php:8.2-fpm-alpine
+FROM php:8.2-fpm
 
 WORKDIR /var/www/html
 
 # 安裝必要的 PHP 擴展
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     linux-headers \
     libzip-dev \
     zip \
@@ -61,12 +61,12 @@ ENV APP_DEBUG=false
 COPY .env.example .env
 
 # 生成應用程式金鑰
-RUN php artisan key:generate
+# RUN php artisan key:generate
 
 # 清理快取
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# RUN php artisan config:cache \
+#     && php artisan route:cache \
+#     && php artisan view:cache
 
 COPY docker/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY docker/start.sh /start.sh
