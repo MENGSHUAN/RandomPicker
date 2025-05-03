@@ -47,14 +47,20 @@ COPY . .
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=frontend /app/public/build ./public/build
 
+# 建立並設定日誌目錄
+RUN mkdir -p /var/www/html/storage/logs \
+    && touch /var/www/html/storage/logs/laravel.log
+
 # 設定權限
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
+    && chmod -R 775 /var/www/html/bootstrap/cache \
+    && chmod 664 /var/www/html/storage/logs/laravel.log
 
 # 設定環境變數
 ENV APP_ENV=production
-ENV APP_DEBUG=false
+ENV APP_DEBUG=true
+ENV LOG_CHANNEL=stderr
 
 # 複製環境設定檔
 COPY .env.example .env
