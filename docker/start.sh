@@ -2,11 +2,15 @@
 
 echo "[DEBUG] PORT is $PORT"
 
-# 啟動 PHP-FPM
+if [ -z "$PORT" ]; then
+    export PORT=8080
+fi
+
 php-fpm &
 
-# 等待 PHP-FPM 啟動
 sleep 2
 
-# 啟動 Nginx（不用再做 envsubst）
+# 用 template 動態產生真正的 nginx.conf
+envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+
 nginx -g 'daemon off;'

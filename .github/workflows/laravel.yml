@@ -21,7 +21,8 @@ jobs:
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     - name: Generate key
-      run: php artisan key:generate
+      id: generate_key
+      run: echo "APP_KEY=$(php artisan key:generate --show)" >> $GITHUB_ENV
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
@@ -84,7 +85,7 @@ jobs:
         run: |
           heroku config:set APP_ENV=production --app ${{ secrets.HEROKU_APP_NAME }}
           heroku config:set APP_DEBUG=false --app ${{ secrets.HEROKU_APP_NAME }}
-          heroku config:set APP_KEY=$(php artisan key:generate --show) --app ${{ secrets.HEROKU_APP_NAME }}
+          heroku config:set APP_KEY=${{ env.APP_KEY }} --app ${{ secrets.HEROKU_APP_NAME }}
           heroku config:set APP_URL=https://laravel-lottery-e5c1a38ab100.herokuapp.com --app ${{ secrets.HEROKU_APP_NAME }}
 
       - name: Release image on Heroku

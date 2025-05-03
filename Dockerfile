@@ -68,12 +68,8 @@ RUN php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache
 
-# 設定 Nginx
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-
-# 設定啟動腳本
-COPY docker/start.sh /start.sh
+COPY ./nginx.conf.template /etc/nginx/nginx.conf.template
+COPY ./start.sh /start.sh
 RUN chmod +x /start.sh
 
-# 啟動應用程式
 ENTRYPOINT ["/start.sh"]
