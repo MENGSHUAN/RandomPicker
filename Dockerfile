@@ -76,4 +76,4 @@ COPY docker/start.sh /start.sh
 RUN chmod +x /start.sh
 
 # 啟動應用程式
-CMD ["/start.sh"] 
+ENTRYPOINT ["/start.sh"]

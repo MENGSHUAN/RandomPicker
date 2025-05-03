@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo "[DEBUG] PORT is $PORT"
+
 # 確保 PORT 環境變數存在
 if [ -z "$PORT" ]; then
     export PORT=8080
