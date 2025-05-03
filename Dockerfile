@@ -30,7 +30,6 @@ WORKDIR /var/www/html
 
 # 安裝必要的 PHP 擴展
 RUN apt-get update && apt-get install -y \
-    linux-headers \
     libzip-dev \
     zip \
     unzip \
