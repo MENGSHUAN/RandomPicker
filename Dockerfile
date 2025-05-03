@@ -68,8 +68,8 @@ RUN php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache
 
-COPY ./nginx.conf.template /etc/nginx/nginx.conf.template
-COPY ./start.sh /start.sh
+COPY docker/nginx.conf.template /etc/nginx/nginx.conf.template
+COPY docker/start.sh /start.sh
 RUN chmod +x /start.sh
 
 ENTRYPOINT ["/start.sh"]
