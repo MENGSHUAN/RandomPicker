@@ -37,7 +37,8 @@ RUN apk add --no-cache \
     nginx \
     && docker-php-ext-install \
     pdo_mysql \
-    zip
+    zip \
+    && apt-get update && apt-get install -y gettext-base
 
 # 安裝 Composer
 COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
