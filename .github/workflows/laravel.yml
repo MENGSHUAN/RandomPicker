@@ -86,6 +86,7 @@ jobs:
           heroku config:set APP_DEBUG=false --app ${{ secrets.HEROKU_APP_NAME }}
           heroku config:set APP_KEY=$(php artisan key:generate --show) --app ${{ secrets.HEROKU_APP_NAME }}
           heroku config:set PORT=8080 --app ${{ secrets.HEROKU_APP_NAME }}
+          heroku config:set APP_URL=https://laravel-lottery-e5c1a38ab100.herokuapp.com --app ${{ secrets.HEROKU_APP_NAME }}
 
       - name: Release image on Heroku
         run: heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
