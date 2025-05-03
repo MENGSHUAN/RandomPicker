@@ -1,5 +1,5 @@
 # 建置階段
-FROM composer:2.7 as vendor
+FROM composer:2.7 AS vendor
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ RUN composer install \
     --prefer-dist
 
 # 前端建置階段
-FROM node:20-alpine as frontend
+FROM node:20-alpine AS frontend
 
 WORKDIR /app
 
@@ -35,10 +35,10 @@ RUN apk add --no-cache \
     zip \
     unzip \
     nginx \
+    gettext \
     && docker-php-ext-install \
     pdo_mysql \
-    zip \
-    && apt-get update && apt-get install -y gettext-base
+    zip
 
 # 安裝 Composer
 COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
