@@ -12,7 +12,7 @@ php-fpm &
 sleep 2
 
 # 用 envsubst 替換 Nginx 配置中的 __PORT__ 為 $PORT
-envsubst '$PORT' < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp
+envsubst < /etc/nginx/nginx.conf > /etc/nginx/nginx.conf.tmp
 mv /etc/nginx/nginx.conf.tmp /etc/nginx/nginx.conf
 
 # 啟動 Nginx
