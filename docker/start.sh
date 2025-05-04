@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 設定環境變數
-export PORT=${PORT:-8080}
+export PORT=${PORT:-80}
 envsubst '${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 # 建立必要的目錄
