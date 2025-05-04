@@ -10,10 +10,9 @@ mkdir -p /var/www/html/storage/framework/sessions
 mkdir -p /var/www/html/storage/framework/views
 mkdir -p /var/www/html/storage/logs
 
-# 設定權限
-chown -R www-data:www-data /var/www/html/storage
-chmod -R 775 /var/www/html/storage
-chmod -R 775 /var/www/html/bootstrap/cache
+# 設定權限（使用 chmod 而不是 chown）
+chmod -R 777 /var/www/html/storage
+chmod -R 777 /var/www/html/bootstrap/cache
 
 # 清除快取
 php artisan config:clear
@@ -22,7 +21,10 @@ php artisan view:clear
 php artisan route:clear
 
 # 啟動 PHP-FPM
-php-fpm
+php-fpm &
+
+# 等待 PHP-FPM 啟動
+sleep 5
 
 # 啟動 Nginx
 nginx -g 'daemon off;'

@@ -54,10 +54,9 @@ RUN mkdir -p /var/www/html/storage/framework/cache/data \
     && touch /var/www/html/storage/logs/laravel.log
 
 # 設定權限
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache \
-    && chmod 664 /var/www/html/storage/logs/laravel.log
+RUN chmod -R 777 /var/www/html/storage \
+    && chmod -R 777 /var/www/html/bootstrap/cache \
+    && chmod 666 /var/www/html/storage/logs/laravel.log
 
 # 設定環境變數
 ENV APP_ENV=production
