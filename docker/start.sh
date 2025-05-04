@@ -14,6 +14,9 @@ mkdir -p /var/www/html/storage/logs
 chmod -R 777 /var/www/html/storage
 chmod -R 777 /var/www/html/bootstrap/cache
 
+# 生成加密金鑰
+php artisan key:generate --force
+
 # 清除快取
 php artisan config:clear
 php artisan cache:clear
