@@ -46,8 +46,11 @@ COPY . .
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=frontend /app/public/build ./public/build
 
-# 建立並設定日誌目錄
-RUN mkdir -p /var/www/html/storage/logs \
+# 建立並設定必要的目錄
+RUN mkdir -p /var/www/html/storage/framework/cache/data \
+    && mkdir -p /var/www/html/storage/framework/sessions \
+    && mkdir -p /var/www/html/storage/framework/views \
+    && mkdir -p /var/www/html/storage/logs \
     && touch /var/www/html/storage/logs/laravel.log
 
 # 設定權限
@@ -60,6 +63,8 @@ RUN chown -R www-data:www-data /var/www/html \
 ENV APP_ENV=production
 ENV APP_DEBUG=true
 ENV LOG_CHANNEL=stderr
+ENV CACHE_DRIVER=file
+ENV SESSION_DRIVER=file
 
 # 複製環境設定檔
 COPY .env.example .env

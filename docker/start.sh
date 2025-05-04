@@ -1,30 +1,28 @@
-#!/bin/sh
+#!/bin/bash
 
-echo "[DEBUG] PORT is $PORT"
+# 設定環境變數
+export PORT=${PORT:-80}
+envsubst '${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
-if [ -z "$PORT" ]; then
-    export PORT=8080
-fi
+# 建立必要的目錄
+mkdir -p /var/www/html/storage/framework/cache/data
+mkdir -p /var/www/html/storage/framework/sessions
+mkdir -p /var/www/html/storage/framework/views
+mkdir -p /var/www/html/storage/logs
 
-# 執行 Laravel 的必要命令
+# 設定權限
+chown -R www-data:www-data /var/www/html/storage
+chmod -R 775 /var/www/html/storage
+chmod -R 775 /var/www/html/bootstrap/cache
+
+# 清除快取
 php artisan config:clear
-php artisan route:clear
 php artisan cache:clear
 php artisan view:clear
-
-# 生成應用程式金鑰（如果尚未設定）
-if [ -z "$APP_KEY" ]; then
-    php artisan key:generate
-fi
+php artisan route:clear
 
 # 啟動 PHP-FPM
-php-fpm -D
-
-# 等待 PHP-FPM 啟動
-sleep 2
-
-# 用 template 動態產生真正的 nginx.conf
-envsubst '${PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+php-fpm
 
 # 啟動 Nginx
 nginx -g 'daemon off;'
