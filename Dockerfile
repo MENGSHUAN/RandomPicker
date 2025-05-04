@@ -78,3 +78,5 @@ WORKDIR /var/www/html
 
 # 設定啟動命令
 CMD ["/start.sh"]
+
+EXPOSE 8080
