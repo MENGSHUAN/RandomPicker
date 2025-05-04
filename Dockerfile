@@ -36,7 +36,6 @@ RUN apt-get update && apt-get install -y \
     nginx \
     gettext \
     && docker-php-ext-install \
-    pdo_mysql \
     zip
 
 # 安裝 Composer
