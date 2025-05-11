@@ -87,12 +87,51 @@
             position: absolute;
             top: 0;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translate(-50%, -80%) rotate(0deg);
             width: 0;
             height: 0;
             border-left: 20px solid transparent;
             border-right: 20px solid transparent;
             border-top: 35px solid red;
+            z-index: 1;
+        }
+
+        #pointer-bottom {
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            transform: translate(-50%, 80%) rotate(180deg);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 35px solid red;
+            z-index: 1;
+        }
+
+        #pointer-right {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            transform: translate(80%, -50%) rotate(180deg);
+            width: 0;
+            height: 0;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+            border-left: 35px solid red;
+            z-index: 1;
+        }
+
+        #pointer-left {
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            transform: translate(-80%, -50%) rotate(180deg);
+            width: 0;
+            height: 0;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+            border-right: 35px solid red;
             z-index: 1;
         }
 
@@ -155,6 +194,9 @@
         <div class="left-section">
             <div id="wheel-container">
                 <div id="pointer"></div>
+                <div id="pointer-bottom"></div>
+                <div id="pointer-right"></div>
+                <div id="pointer-left"></div>
                 <div id="wheel">
                     <div id="center-circle"></div>
                 </div>
@@ -164,6 +206,7 @@
             <p id="result"></p>
             <div class="input-group">
                 <input type="number" id="prize-count" min="1" max="100" value="12" placeholder="選項數量">
+                <input type="number" id="draw-count" min="1" max="4" value="1" placeholder="抽出數量" style="font-size:18px;border:2px solid #ccc;border-radius:5px;width:100px;text-align:center;height:52px;">
                 <button id="spin-btn">開始抽籤</button>
             </div>
         </div>
@@ -174,6 +217,7 @@
         const spinBtn = document.getElementById('spin-btn');
         const resultText = document.getElementById('result');
         const prizeCountInput = document.getElementById('prize-count');
+        const drawCountInput = document.getElementById('draw-count');
         let prizes = [];
         const baseColors = [
             '#FF6B6B', // 珊瑚紅
@@ -273,6 +317,8 @@
             // 恢復 transition
             wheel.style.transition = 'transform 4s cubic-bezier(0.33, 1, 0.68, 1)';
 
+            const drawCount = Math.max(1, Math.min(parseInt(drawCountInput.value) || 1, 4));
+
             fetch('/draw', {
                 method: 'POST',
                 headers: {
@@ -280,23 +326,59 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 },
                 body: JSON.stringify({
-                    count: parseInt(prizeCountInput.value) || 12
+                    count: parseInt(prizeCountInput.value) || 12,
+                    draw_count: drawCount
                 })
             })
             .then(response => response.json())
             .then(data => {
-                const prizeIndex = data.index;
-                const extraSpins = 5; // 轉幾圈
-                const targetAngle = (360 * extraSpins) + (360 - prizeIndex * anglePerSlice - anglePerSlice / 2);
-                
-                // 計算新的目標角度
+                if (data.error) {
+                    resultText.textContent = data.error;
+                    spinBtn.disabled = false;
+                    return;
+                }
+                const n = prizes.length;
+                const index1 = data.index;
+                const anglePerSlice = 360 / n;
+                const extraSpins = 5;
+                const targetAngle = (360 * extraSpins) + (360 - index1 * anglePerSlice - anglePerSlice / 2);
                 currentRotation = targetAngle % 360;
-                
-                // 旋轉轉盤
                 wheel.style.transform = `rotate(${targetAngle}deg)`;
 
+                // 指針對應 index 計算
+                let indexes = [index1];
+                if (drawCount >= 2) {
+                    const offset = Math.round(180 / anglePerSlice);
+                    indexes.push((index1 + offset) % n);
+                }
+                if (drawCount >= 3) {
+                    const offset = Math.round(90 / anglePerSlice);
+                    indexes.push((index1 + offset) % n);
+                }
+                if (drawCount >= 4) {
+                    const offset = Math.round(270 / anglePerSlice);
+                    indexes.push((index1 + offset) % n);
+                }
+
+                // 指針顯示控制
+                document.getElementById('pointer').style.display = 'block';
+                document.getElementById('pointer-bottom').style.display = (drawCount >= 2) ? 'block' : 'none';
+                document.getElementById('pointer-right').style.display = (drawCount >= 3) ? 'block' : 'none';
+                document.getElementById('pointer-left').style.display = (drawCount >= 4) ? 'block' : 'none';
+
                 setTimeout(() => {
-                    resultText.textContent = `抽中了：${data.result}`;
+                    let resultStr = indexes.map((idx, i) => {
+                        // if (i === 0) return `${prizes[idx]}（上）`;
+                        // if (i === 1) return `${prizes[idx]}（下）`;
+                        // if (i === 2) return `${prizes[idx]}（右）`;
+                        // if (i === 3) return `${prizes[idx]}（左）`;
+                        if (i === 0) return `${prizes[idx]}`;
+                        if (i === 1) return `${prizes[idx]}`;
+                        if (i === 2) return `${prizes[idx]}`;
+                        if (i === 3) return `${prizes[idx]}`;
+                        return prizes[idx];
+                    }).join('、');
+                    resultText.textContent = `抽中了：${resultStr}`;
                     spinBtn.disabled = false;
                 }, 4000);
             })
@@ -313,8 +395,23 @@
         // 頁面載入時初始化轉盤
         window.onload = () => {
             prizeCountInput.value = 12; // 設定初始值為 12
+            drawCountInput.value = 1; // 預設抽一個
+            document.getElementById('pointer').style.display = 'block';
+            document.getElementById('pointer-bottom').style.display = 'none';
+            document.getElementById('pointer-right').style.display = 'none';
+            document.getElementById('pointer-left').style.display = 'none';
             updatePrizes();
         };
+
+        // 監聽抽出數量輸入框變化，動態顯示指針
+        drawCountInput.addEventListener('change', () => {
+            const drawCount = Math.max(1, Math.min(parseInt(drawCountInput.value) || 1, 4));
+            drawCountInput.value = drawCount;
+            document.getElementById('pointer').style.display = 'block';
+            document.getElementById('pointer-bottom').style.display = (drawCount >= 2) ? 'block' : 'none';
+            document.getElementById('pointer-right').style.display = (drawCount >= 3) ? 'block' : 'none';
+            document.getElementById('pointer-left').style.display = (drawCount >= 4) ? 'block' : 'none';
+        });
     </script>
 </body>
 </html> 
