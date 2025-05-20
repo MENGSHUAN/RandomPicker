@@ -14,7 +14,7 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background-color:rgb(230, 230, 239);
+            background-color:rgb(149, 150, 194);
             font-family: Arial, sans-serif;
         }
 
@@ -190,9 +190,9 @@
     </style>
 </head>
 <body>
-    {{-- <div style="position: absolute; top: 30px; left: 0; width: 100%; text-align: center; z-index: 10; font-size: 2.2rem; font-weight: bold; letter-spacing: 2px; color: #333;">
+    <div style="position: absolute; top: 30px; left: 0; width: 100%; text-align: center; z-index: 10; font-size: 2.2rem; font-weight: bold; letter-spacing: 2px; color: #333;">
         轉盤抽籤 GDG 2025, 05, 21 DEMO
-    </div> --}}
+    </div>
     <div class="container">
         <div class="left-section">
             <div id="wheel-container">
