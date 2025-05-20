@@ -1,6 +1,3 @@
-{{-- 故意讓 blade 出錯 --}}
-{{-- {{ $this_variable_is_not_defined->foo --}}
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
