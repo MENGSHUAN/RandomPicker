@@ -1,7 +1,5 @@
-{{-- <?php this_is_a_syntax_error(); ?> --}}
 {{-- 故意讓 blade 出錯 --}}
-{{-- {{ $this_variable_is_not_defined->foo }}
-{{-- <?php throw new Exception('Demo Error'); ?> --}}
+{{-- {{ $this_variable_is_not_defined->foo --}}
 
 <!DOCTYPE html>
 <html lang="zh-TW">
