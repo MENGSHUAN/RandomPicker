@@ -1,4 +1,8 @@
-<?php this_is_a_syntax_error(); ?>
+{{-- <?php this_is_a_syntax_error(); ?> --}}
+{{-- 故意讓 blade 出錯 --}}
+{{-- {{ $this_variable_is_not_defined->foo }}
+{{-- <?php throw new Exception('Demo Error'); ?> --}}
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -15,7 +19,7 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background-color:rgb(201, 201, 211);
+            background-color:rgb(230, 230, 239);
             font-family: Arial, sans-serif;
         }
 
