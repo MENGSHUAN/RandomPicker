@@ -17,7 +17,7 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background-color:rgb(107, 107, 163);
+            background-color:rgb(185, 212, 104);
             font-family: Arial, sans-serif;
         }
 
@@ -194,7 +194,7 @@
 </head>
 <body>
     <div style="position: absolute; top: 30px; left: 0; width: 100%; text-align: center; z-index: 10; font-size: 2.2rem; font-weight: bold; letter-spacing: 2px; color: #333;">
-        轉盤抽籤 GDG 2025, 05, 21 DEMO
+        DEMO 第二次測試
     </div>
     <div class="container">
         <div class="left-section">
