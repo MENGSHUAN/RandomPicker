@@ -1,6 +1,3 @@
-{{-- {{ 故意讓 blade 出錯 }}
-{{ $this_variable_is_not_defined->foo }} --}}
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -17,7 +14,7 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background-color:rgb(185, 212, 104);
+            background-color:rgb(233, 235, 227);
             font-family: Arial, sans-serif;
         }
 
@@ -193,9 +190,9 @@
     </style>
 </head>
 <body>
-    <div style="position: absolute; top: 30px; left: 0; width: 100%; text-align: center; z-index: 10; font-size: 2.2rem; font-weight: bold; letter-spacing: 2px; color: #333;">
+    {{-- <div style="position: absolute; top: 30px; left: 0; width: 100%; text-align: center; z-index: 10; font-size: 2.2rem; font-weight: bold; letter-spacing: 2px; color: #333;">
         DEMO 第二次測試
-    </div>
+    </div> --}}
     <div class="container">
         <div class="left-section">
             <div id="wheel-container">
@@ -218,6 +215,8 @@
         </div>
     </div>
 
+    <audio id="spin-audio" src="{{ asset('sound/spinning-reel-7sec.wav') }}"></audio>
+
     <script>
         const wheel = document.getElementById('wheel');
         const spinBtn = document.getElementById('spin-btn');
@@ -234,6 +233,7 @@
         ];
         let anglePerSlice = 360 / prizes.length;
         let currentRotation = 0;
+        const spinAudio = document.getElementById('spin-audio');
 
         // 更新獎品列表
         function updatePrizes() {
@@ -313,6 +313,10 @@
             spinBtn.disabled = true;
             resultText.textContent = '';
 
+            // 播放音效
+            spinAudio.currentTime = 0;
+            spinAudio.play();
+
             // 移除轉盤的 transition，立即重置到初始位置
             wheel.style.transition = 'none';
             wheel.style.transform = `rotate(${currentRotation}deg)`;
@@ -341,6 +345,9 @@
                 if (data.error) {
                     resultText.textContent = data.error;
                     spinBtn.disabled = false;
+                    // 停止音效
+                    spinAudio.pause();
+                    spinAudio.currentTime = 0;
                     return;
                 }
                 const n = prizes.length;
@@ -358,8 +365,12 @@
                     indexes.push((index1 + offset) % n);
                 }
                 if (drawCount >= 3) {
-                    const offset = Math.round(90 / anglePerSlice);
-                    indexes.push((index1 + offset) % n);
+                    let offset = Math.round(90 / anglePerSlice);
+                    let idx = (index1 + offset) % n;
+                    if (n % 4 === 2) {
+                        idx = (idx - 1 + n) % n;
+                    }
+                    indexes.push(idx);
                 }
                 if (drawCount >= 4) {
                     const offset = Math.round(270 / anglePerSlice);
@@ -373,11 +384,12 @@
                 document.getElementById('pointer-left').style.display = (drawCount >= 4) ? 'block' : 'none';
 
                 setTimeout(() => {
+
+                    // 停止音效
+                    spinAudio.pause();
+                    spinAudio.currentTime = 0;
+                    
                     let resultStr = indexes.map((idx, i) => {
-                        // if (i === 0) return `${prizes[idx]}（上）`;
-                        // if (i === 1) return `${prizes[idx]}（下）`;
-                        // if (i === 2) return `${prizes[idx]}（右）`;
-                        // if (i === 3) return `${prizes[idx]}（左）`;
                         if (i === 0) return `${prizes[idx]}`;
                         if (i === 1) return `${prizes[idx]}`;
                         if (i === 2) return `${prizes[idx]}`;
@@ -386,12 +398,16 @@
                     }).join('、');
                     resultText.textContent = `抽中了：${resultStr}`;
                     spinBtn.disabled = false;
+
                 }, 4000);
             })
             .catch(error => {
                 console.error('Error:', error);
                 resultText.textContent = '抽籤失敗，請重試';
                 spinBtn.disabled = false;
+                // 停止音效
+                spinAudio.pause();
+                spinAudio.currentTime = 0;
             });
         });
 
