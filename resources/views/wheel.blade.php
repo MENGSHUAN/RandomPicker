@@ -63,7 +63,7 @@
             left: 250px;
             top: 250px;
             transform-origin: 0 0;
-            font-size: 15px;
+            font-size: 28px;
             font-weight: bold;
             color: #333;
             white-space: nowrap;
@@ -225,9 +225,8 @@
         const drawCountInput = document.getElementById('draw-count');
         let prizes = [];
         const baseColors = [
-            '#FF0000', // 鮮紅
             '#FFD600', // 鮮黃
-            '#00E676', // 鮮綠
+            '#00FF00', // 更鮮艷的綠
             '#2979FF', // 鮮藍
             '#FF00B0', // 鮮粉紫
             '#FF6D00', // 鮮橘
@@ -397,7 +396,7 @@
                     selectedPrizes.sort((a, b) => a - b); // 由小到大排序
                     let resultStr = selectedPrizes.join('、');
                     // 將選項文字用 span 包起來並加大字體
-                    let resultHtml = `抽中了：<span style="font-size: 2em; color: #4CAF50; font-weight: bold;">${resultStr}</span>`;
+                    let resultHtml = `抽中了：<span style="font-size: 3em; color: #4CAF50; font-weight: bold;">${resultStr}</span>`;
                     resultText.innerHTML = resultHtml;
                     spinBtn.disabled = false;
 
