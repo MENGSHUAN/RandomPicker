@@ -389,14 +389,13 @@
                     spinAudio.pause();
                     spinAudio.currentTime = 0;
                     
-                    let resultStr = indexes.map((idx, i) => {
-                        if (i === 0) return `${prizes[idx]}`;
-                        if (i === 1) return `${prizes[idx]}`;
-                        if (i === 2) return `${prizes[idx]}`;
-                        if (i === 3) return `${prizes[idx]}`;
-                        return prizes[idx];
-                    }).join('、');
-                    resultText.textContent = `抽中了：${resultStr}`;
+                    // 取得抽中的選項，排序後顯示
+                    let selectedPrizes = indexes.map(idx => prizes[idx]);
+                    selectedPrizes.sort((a, b) => a - b); // 由小到大排序
+                    let resultStr = selectedPrizes.join('、');
+                    // 將選項文字用 span 包起來並加大字體
+                    let resultHtml = `抽中了：<span style="font-size: 2em; color: #4CAF50; font-weight: bold;">${resultStr}</span>`;
+                    resultText.innerHTML = resultHtml;
                     spinBtn.disabled = false;
 
                 }, 4000);
