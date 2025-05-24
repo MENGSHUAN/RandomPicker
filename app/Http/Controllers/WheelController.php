@@ -19,8 +19,10 @@ class WheelController extends Controller
             return response()->json(['error' => '選項數量需大於0'], 400);
         }
         $index = array_rand($prizes, 1);
+        $value = $prizes[$index];
         return response()->json([
-            'index' => $index
+            'index' => $index,
+            'value' => $value
         ]);
     }
 

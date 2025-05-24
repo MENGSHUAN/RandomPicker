@@ -386,17 +386,14 @@
                 document.getElementById('pointer-left').style.display = (drawCount >= 4) ? 'block' : 'none';
 
                 setTimeout(() => {
-
                     // 停止音效
                     spinAudio.pause();
                     spinAudio.currentTime = 0;
                     
-                    // 取得抽中的選項，排序後顯示
-                    let selectedPrizes = indexes.map(idx => prizes[idx]);
-                    selectedPrizes.sort((a, b) => a - b); // 由小到大排序
-                    let resultStr = selectedPrizes.join('、');
+                    // 直接依照抽出順序顯示
+                    let resultStr = indexes.map(idx => prizes[idx]).join('、');
                     // 將選項文字用 span 包起來並加大字體
-                    let resultHtml = `抽中了：<span style="font-size: 3em; color: #4CAF50; font-weight: bold;">${resultStr}</span>`;
+                    let resultHtml = `抽中了：<span style=\"font-size: 3em; color: #4CAF50; font-weight: bold;\">${resultStr}</span>`;
                     resultText.innerHTML = resultHtml;
                     spinBtn.disabled = false;
 
