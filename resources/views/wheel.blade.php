@@ -225,11 +225,14 @@
         const drawCountInput = document.getElementById('draw-count');
         let prizes = [];
         const baseColors = [
-            '#FF6B6B', // 珊瑚紅
-            '#FFD93D', // 明亮黃
-            '#6BCB77', // 薄荷綠
-            '#B4B4B8', // 淺灰色
-            '#3498DB'  // 天藍色
+            '#FF0000', // 鮮紅
+            '#FFD600', // 鮮黃
+            '#00E676', // 鮮綠
+            '#2979FF', // 鮮藍
+            '#FF00B0', // 鮮粉紫
+            '#FF6D00', // 鮮橘
+            '#00B8D4', // 鮮青
+            '#D500F9'  // 鮮紫
         ];
         let anglePerSlice = 360 / prizes.length;
         let currentRotation = 0;
